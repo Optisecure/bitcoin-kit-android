@@ -1,4 +1,4 @@
-package io.horizontalsystems.litecoinkit
+package io.horizontalsystems.indexchainkit
 
 import io.horizontalsystems.bitcoincore.extensions.hexToByteArray
 import io.horizontalsystems.bitcoincore.extensions.toHexString

@@ -1,8 +1,8 @@
-package io.horizontalsystems.litecoinkit
+package io.horizontalsystems.indexchainkit
 
 import io.horizontalsystems.bitcoincore.network.Network
 
-class TestNetLitecoin : Network() {
+class TestNetIndexChain : Network() {
     override val protocolVersion: Int = 70015
     override var port: Int = 19335
 

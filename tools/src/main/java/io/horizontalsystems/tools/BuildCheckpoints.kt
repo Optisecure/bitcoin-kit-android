@@ -10,8 +10,8 @@ import io.horizontalsystems.bitcoinkit.MainNet
 import io.horizontalsystems.bitcoinkit.TestNet
 import io.horizontalsystems.dashkit.MainNetDash
 import io.horizontalsystems.dashkit.TestNetDash
-import io.horizontalsystems.litecoinkit.MainNetLitecoin
-import io.horizontalsystems.litecoinkit.TestNetLitecoin
+import io.horizontalsystems.indexchainkit.MainNetLitecoin
+import io.horizontalsystems.indexchainkit.TestNetLitecoin
 import java.io.*
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets

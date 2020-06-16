@@ -1,4 +1,4 @@
-package io.horizontalsystems.litecoinkit.validators
+package io.horizontalsystems.indexchainkit.validators
 
 import io.horizontalsystems.bitcoincore.blocks.validators.BlockValidatorException
 import io.horizontalsystems.bitcoincore.blocks.validators.IBlockChainedValidator
@@ -6,7 +6,7 @@ import io.horizontalsystems.bitcoincore.crypto.CompactBits
 import io.horizontalsystems.bitcoincore.extensions.toHexString
 import io.horizontalsystems.bitcoincore.io.BitcoinOutput
 import io.horizontalsystems.bitcoincore.models.Block
-import io.horizontalsystems.litecoinkit.ScryptHasher
+import io.horizontalsystems.indexchainkit.ScryptHasher
 import java.math.BigInteger
 
 class ProofOfWorkValidator(private val scryptHasher: ScryptHasher) : IBlockChainedValidator {

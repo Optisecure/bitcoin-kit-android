@@ -1,4 +1,4 @@
-package io.horizontalsystems.litecoinkit
+package io.horizontalsystems.indexchainkit
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

@@ -1,4 +1,4 @@
-package io.horizontalsystems.litecoinkit
+package io.horizontalsystems.indexchainkit
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -19,10 +19,10 @@ import io.horizontalsystems.bitcoincore.utils.Base58AddressConverter
 import io.horizontalsystems.bitcoincore.utils.PaymentAddressParser
 import io.horizontalsystems.bitcoincore.utils.SegwitAddressConverter
 import io.horizontalsystems.hdwalletkit.Mnemonic
-import io.horizontalsystems.litecoinkit.validators.LegacyDifficultyAdjustmentValidator
-import io.horizontalsystems.litecoinkit.validators.ProofOfWorkValidator
+import io.horizontalsystems.indexchainkit.validators.LegacyDifficultyAdjustmentValidator
+import io.horizontalsystems.indexchainkit.validators.ProofOfWorkValidator
 
-class LitecoinKit : AbstractKit {
+class IndexChainKit : AbstractKit {
     enum class NetworkType {
         MainNet,
         TestNet
@@ -67,15 +67,15 @@ class LitecoinKit : AbstractKit {
         network = when (networkType) {
             NetworkType.MainNet -> {
                 initialSyncUrl = "https://ltc.horizontalsystems.xyz/api"
-                MainNetLitecoin()
+                MainNetIndexChain()
             }
             NetworkType.TestNet -> {
                 initialSyncUrl = ""
-                TestNetLitecoin()
+                TestNetIndexChain()
             }
         }
 
-        val paymentAddressParser = PaymentAddressParser("litecoin", removeScheme = true)
+        val paymentAddressParser = PaymentAddressParser("indexchain", removeScheme = true)
         val initialSyncApi = BCoinApi(initialSyncUrl)
 
         val blockValidatorSet = BlockValidatorSet()
