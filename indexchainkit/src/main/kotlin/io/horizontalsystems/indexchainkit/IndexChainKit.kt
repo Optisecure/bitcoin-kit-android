@@ -80,9 +80,6 @@ class IndexChainKit : AbstractKit {
 
         val blockValidatorSet = BlockValidatorSet()
 
-        val proofOfWorkValidator = ProofOfWorkValidator(ScryptHasher())
-        blockValidatorSet.addBlockValidator(proofOfWorkValidator)
-
         val blockValidatorChain = BlockValidatorChain()
 
         val blockHelper = BlockValidatorHelper(storage)
@@ -112,6 +109,7 @@ class IndexChainKit : AbstractKit {
                 .setStorage(storage)
                 .setInitialSyncApi(initialSyncApi)
                 .setBlockValidator(blockValidatorSet)
+                .setBlockHeaderHasher(X16Rv2Hasher())
                 .build()
 
         //  extending bitcoinCore
