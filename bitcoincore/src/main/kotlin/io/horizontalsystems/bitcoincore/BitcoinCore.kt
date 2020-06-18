@@ -123,8 +123,9 @@ class BitcoinCoreBuilder {
         return this
     }
 
-    fun setBlockHeaderParser(blockHeaderParser: BlockHeaderParser) {
+    fun setBlockHeaderParser(blockHeaderParser: BlockHeaderParser): BitcoinCoreBuilder {
         this.blockHeaderParser = blockHeaderParser
+        return this
     }
 
     fun build(): BitcoinCore {

@@ -14,7 +14,7 @@ class IndexBlockHeader(
         timestamp: Long,
         bits: Long,
         nonce: Long,
-        val signature: ByteArray,
+        val signature: ByteArray?,
         hash: ByteArray) : BlockHeader(version, previousBlockHeaderHash, merkleRoot, timestamp, bits, nonce, hash)
 
 

@@ -6,10 +6,8 @@ import io.horizontalsystems.bitcoincore.AbstractKit
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.BitcoinCore.SyncMode
 import io.horizontalsystems.bitcoincore.BitcoinCoreBuilder
-import io.horizontalsystems.bitcoincore.blocks.validators.BitsValidator
 import io.horizontalsystems.bitcoincore.blocks.validators.BlockValidatorChain
 import io.horizontalsystems.bitcoincore.blocks.validators.BlockValidatorSet
-import io.horizontalsystems.bitcoincore.blocks.validators.LegacyTestNetDifficultyValidator
 import io.horizontalsystems.bitcoincore.core.Bip
 import io.horizontalsystems.bitcoincore.managers.*
 import io.horizontalsystems.bitcoincore.network.Network
@@ -19,8 +17,8 @@ import io.horizontalsystems.bitcoincore.utils.Base58AddressConverter
 import io.horizontalsystems.bitcoincore.utils.PaymentAddressParser
 import io.horizontalsystems.bitcoincore.utils.SegwitAddressConverter
 import io.horizontalsystems.hdwalletkit.Mnemonic
-import io.horizontalsystems.indexchainkit.validators.LegacyDifficultyAdjustmentValidator
-import io.horizontalsystems.indexchainkit.validators.ProofOfWorkValidator
+import io.horizontalsystems.indexchainkit.validators.DarkGravityWaveTestnetValidator
+import io.horizontalsystems.indexchainkit.validators.DarkGravityWaveValidator
 
 class IndexChainKit : AbstractKit {
     enum class NetworkType {
@@ -84,13 +82,11 @@ class IndexChainKit : AbstractKit {
 
         val blockHelper = BlockValidatorHelper(storage)
 
-        if (networkType == NetworkType.MainNet) {
-            blockValidatorChain.add(LegacyDifficultyAdjustmentValidator(blockHelper, heightInterval, targetTimespan, maxTargetBits))
-            blockValidatorChain.add(BitsValidator())
-        } else if (networkType == NetworkType.TestNet) {
-            blockValidatorChain.add(LegacyDifficultyAdjustmentValidator(blockHelper, heightInterval, targetTimespan, maxTargetBits))
-            blockValidatorChain.add(LegacyTestNetDifficultyValidator(storage, heightInterval, targetSpacing, maxTargetBits))
-            blockValidatorChain.add(BitsValidator())
+        if (network is MainNetIndexChain) {
+            blockValidatorChain.add(DarkGravityWaveValidator(blockHelper, heightInterval, targetTimespan, maxTargetBits, 68589))
+        } else {
+            blockValidatorChain.add(DarkGravityWaveTestnetValidator(targetSpacing, targetTimespan, maxTargetBits, 4002))
+            blockValidatorChain.add(DarkGravityWaveValidator(blockHelper, heightInterval, targetTimespan, maxTargetBits, 4002))
         }
 
         blockValidatorSet.addBlockValidator(blockValidatorChain)
@@ -102,6 +98,7 @@ class IndexChainKit : AbstractKit {
                 .setSeed(seed)
                 .setNetwork(network)
                 .setBip(bip)
+                .setBlockHeaderParser(IndexChainBlockHeaderParser())
                 .setPaymentAddressParser(paymentAddressParser)
                 .setPeerSize(peerSize)
                 .setSyncMode(syncMode)

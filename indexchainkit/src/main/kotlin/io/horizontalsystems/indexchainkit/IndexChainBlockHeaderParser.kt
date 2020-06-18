@@ -14,9 +14,12 @@ class IndexChainBlockHeaderParser(hasher: IHasher = X16Rv2Hasher()) : BlockHeade
         val timestamp = input.readUnsignedInt()
         val bits = input.readUnsignedInt()
         val nonce = input.readUnsignedInt()
-        val signatureSize = input.readVarInt()
-        val signature = input.readBytes(signatureSize.toInt())
+        var signature: ByteArray? = null
 
+        if (nonce == 0L) {
+            val signatureSize = input.readVarInt()
+            signature = input.readBytes(signatureSize.toInt())
+        }
         val payload = serialize(version, previousBlockHeaderHash, merkleRoot, timestamp, bits, nonce)
 
         val hash = hasher.hash(payload)
