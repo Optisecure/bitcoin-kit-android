@@ -64,7 +64,7 @@ class IndexChainKit : AbstractKit {
 
         network = when (networkType) {
             NetworkType.MainNet -> {
-                initialSyncUrl = "https://ltc.horizontalsystems.xyz/api"
+                initialSyncUrl = "https://insight.indexchain.org/ "
                 MainNetIndexChain()
             }
             NetworkType.TestNet -> {
@@ -74,7 +74,7 @@ class IndexChainKit : AbstractKit {
         }
 
         val paymentAddressParser = PaymentAddressParser("indexchain", removeScheme = true)
-        val initialSyncApi = BCoinApi(initialSyncUrl)
+        val initialSyncApi = InsightApi(initialSyncUrl)
 
         val blockValidatorSet = BlockValidatorSet()
 
@@ -83,10 +83,10 @@ class IndexChainKit : AbstractKit {
         val blockHelper = BlockValidatorHelper(storage)
 
         if (network is MainNetIndexChain) {
-            blockValidatorChain.add(DarkGravityWaveValidator(blockHelper, heightInterval, targetTimespan, maxTargetBits, 68589))
+            blockValidatorChain.add(DarkGravityWaveValidator(blockHelper, dgwPastBlocks, targetTimespan, maxTargetBits, 0))
         } else {
-            blockValidatorChain.add(DarkGravityWaveTestnetValidator(targetSpacing, targetTimespan, maxTargetBits, 4002))
-            blockValidatorChain.add(DarkGravityWaveValidator(blockHelper, heightInterval, targetTimespan, maxTargetBits, 4002))
+            blockValidatorChain.add(DarkGravityWaveTestnetValidator(targetSpacing, targetTimespan, maxTargetBits, 0))
+            blockValidatorChain.add(DarkGravityWaveValidator(blockHelper, dgwPastBlocks, targetTimespan, maxTargetBits, 0))
         }
 
         blockValidatorSet.addBlockValidator(blockValidatorChain)
@@ -132,8 +132,9 @@ class IndexChainKit : AbstractKit {
     companion object {
 
         const val maxTargetBits: Long = 0x1e0fffff      // Maximum difficulty
-        const val targetSpacing = 150                   // 2.5 minutes per block.
-        const val targetTimespan: Long = 302400         // 3.5 days per difficulty cycle, on average.
+        const val targetSpacing = 120                   // 2.5 minutes per block.
+        const val targetTimespan: Long = 2400         // 3.5 days per difficulty cycle, on average.
+        const val dgwPastBlocks: Long = 30
         const val heightInterval = targetTimespan / targetSpacing // 2016 blocks
 
         private fun getDatabaseName(networkType: NetworkType, walletId: String, syncMode: SyncMode, bip: Bip): String = "Litecoin-${networkType.name}-$walletId-${syncMode.javaClass.simpleName}-${bip.name}"

@@ -11,7 +11,7 @@ class MainNetIndexChain : Network() {
     override var addressVersion: Int = 102
     override var addressSegwitHrp: String = "ic"
     override var addressScriptVersion: Int = 0x07
-    override var coinType: Int = 2
+    override var coinType: Int = 475
     override val maxBlockSize = 1_000_000
     override val dustRelayTxFee = 3000
 
