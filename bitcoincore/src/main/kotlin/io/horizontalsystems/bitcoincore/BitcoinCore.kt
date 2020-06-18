@@ -40,6 +40,7 @@ class BitcoinCoreBuilder {
     private var blockHeaderHasher: IHasher? = null
     private var transactionInfoConverter: ITransactionInfoConverter? = null
     private var blockValidator: IBlockValidator? = null
+    private var blockHeaderParser: BlockHeaderParser? = null
 
     // parameters with default values
     private var confirmationsThreshold = 6
@@ -120,6 +121,10 @@ class BitcoinCoreBuilder {
     fun addPlugin(plugin: IPlugin): BitcoinCoreBuilder {
         plugins.add(plugin)
         return this
+    }
+
+    fun setBlockHeaderParser(blockHeaderParser: BlockHeaderParser) {
+        this.blockHeaderParser = blockHeaderParser
     }
 
     fun build(): BitcoinCore {
@@ -250,8 +255,11 @@ class BitcoinCoreBuilder {
 
         // this part can be moved to another place
 
+        if (blockHeaderParser == null)
+            blockHeaderParser = BlockHeaderParser(blockHeaderHasher)
+
         bitcoinCore.addMessageParser(AddrMessageParser())
-                .addMessageParser(MerkleBlockMessageParser(BlockHeaderParser(blockHeaderHasher)))
+                .addMessageParser(MerkleBlockMessageParser(blockHeaderParser!!))
                 .addMessageParser(InvMessageParser())
                 .addMessageParser(GetDataMessageParser())
                 .addMessageParser(PingMessageParser())
