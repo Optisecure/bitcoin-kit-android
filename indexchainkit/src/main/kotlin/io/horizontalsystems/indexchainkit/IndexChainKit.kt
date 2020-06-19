@@ -64,7 +64,7 @@ class IndexChainKit : AbstractKit {
 
         network = when (networkType) {
             NetworkType.MainNet -> {
-                initialSyncUrl = "https://insight.indexchain.org/ "
+                initialSyncUrl = "https://insight.indexchain.org/insight-api-zcoin"
                 MainNetIndexChain()
             }
             NetworkType.TestNet -> {
