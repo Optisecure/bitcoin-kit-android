@@ -11,8 +11,9 @@ import io.horizontalsystems.bitcoinkit.TestNet
 import io.horizontalsystems.dashkit.MainNetDash
 import io.horizontalsystems.dashkit.TestNetDash
 import io.horizontalsystems.indexchainkit.MainNetIndexChain
-import io.horizontalsystems.indexchainkit.MainNetLitecoin
-import io.horizontalsystems.indexchainkit.TestNetLitecoin
+import io.horizontalsystems.indexchainkit.TestNetIndexChain
+import io.horizontalsystems.litecoinkit.MainNetLitecoin
+import io.horizontalsystems.litecoinkit.TestNetLitecoin
 import java.io.*
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
@@ -21,7 +22,7 @@ import java.util.logging.Logger
 import kotlin.system.exitProcess
 
 fun main() {
-    Logger.getLogger("").level = Level.SEVERE
+    Logger.getLogger("").level = Level.ALL
     BuildCheckpoints()
     Thread.sleep(5000)
 }
@@ -45,7 +46,7 @@ class BuildCheckpoints : CheckpointSyncer.Listener {
         //it.add(CheckpointSyncer(MainNetLitecoin(), 2016, 2, this))
         //it.add(CheckpointSyncer(TestNetLitecoin(), 2016, 2, this))
 
-        it.add(CheckpointSyncer(MainNetIndexChain(), 30, 2, this))
+        it.add(IndexCheckpointSyncer(MainNetIndexChain(), 30, 2, this))
         //it.add(CheckpointSyncer(TestNetLitecoin(), 2016, 2, this))
     }
 
@@ -108,6 +109,7 @@ class BuildCheckpoints : CheckpointSyncer.Listener {
             is TestNetDash -> "dashkit"
             is MainNetLitecoin,
             is TestNetLitecoin -> "litecoinkit"
+            is MainNetIndexChain, is TestNetIndexChain -> "indexchainkit"
             else -> throw Exception("Invalid network")
         }
     }
