@@ -1,4 +1,4 @@
-package io.horizontalsystems.indexchainkit
+package io.horizontalsystems.litecoinkit
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -19,8 +19,8 @@ import io.horizontalsystems.bitcoincore.utils.Base58AddressConverter
 import io.horizontalsystems.bitcoincore.utils.PaymentAddressParser
 import io.horizontalsystems.bitcoincore.utils.SegwitAddressConverter
 import io.horizontalsystems.hdwalletkit.Mnemonic
-import io.horizontalsystems.indexchainkit.validators.LegacyDifficultyAdjustmentValidator
-import io.horizontalsystems.indexchainkit.validators.ProofOfWorkValidator
+import io.horizontalsystems.litecoinkit.validators.LegacyDifficultyAdjustmentValidator
+import io.horizontalsystems.litecoinkit.validators.ProofOfWorkValidator
 
 class LitecoinKit : AbstractKit {
     enum class NetworkType {

@@ -1,4 +1,4 @@
-package io.horizontalsystems.indexchainkit
+package io.horizontalsystems.litecoinkit
 
 import io.horizontalsystems.bitcoincore.core.IHasher
 import io.horizontalsystems.bitcoincore.utils.HashUtils

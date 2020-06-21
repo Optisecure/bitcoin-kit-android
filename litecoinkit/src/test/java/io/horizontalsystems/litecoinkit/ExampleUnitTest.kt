@@ -1,4 +1,4 @@
-package io.horizontalsystems.indexchainkit
+package io.horizontalsystems.litecoinkit
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

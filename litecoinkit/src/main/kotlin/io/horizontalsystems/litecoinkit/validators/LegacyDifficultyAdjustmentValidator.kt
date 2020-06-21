@@ -1,4 +1,4 @@
-package io.horizontalsystems.indexchainkit.validators
+package io.horizontalsystems.litecoinkit.validators
 
 import io.horizontalsystems.bitcoincore.blocks.validators.BlockValidatorException
 import io.horizontalsystems.bitcoincore.blocks.validators.IBlockChainedValidator
