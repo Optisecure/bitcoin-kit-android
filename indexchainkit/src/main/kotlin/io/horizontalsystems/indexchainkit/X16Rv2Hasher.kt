@@ -25,17 +25,23 @@ class TigerKeccak512 : Digest {
 
     override fun digest(): ByteArray {
         val hash = tiger.digest();
-        return keccak512.digest(hash)
+        var fullHash = ByteArray(64)
+        hash.copyInto(fullHash, 0, 0, hash.size)
+        return keccak512.digest(fullHash)
     }
 
     override fun digest(inbuf: ByteArray): ByteArray {
         var hash = tiger.digest(inbuf)
-        return keccak512.digest(hash)
+        var fullHash = ByteArray(64)
+        hash.copyInto(fullHash, 0, 0, hash.size)
+        return keccak512.digest(fullHash)
     }
 
     override fun digest(outbuf: ByteArray?, off: Int, len: Int): Int {
         val hash = tiger.digest()
-        keccak512.update(hash)
+        var fullHash = ByteArray(64)
+        hash.copyInto(fullHash, 0, 0, hash.size)
+        keccak512.update(fullHash)
         return keccak512.digest(outbuf, off, len)
     }
 
@@ -73,18 +79,24 @@ class TigerLuffa512 : Digest {
     }
 
     override fun digest(): ByteArray {
-        val hash = tiger.digest();
-        return luffa512.digest(hash)
+        val hash = tiger.digest()
+        var fullHash = ByteArray(64)
+        hash.copyInto(fullHash, 0, 0, hash.size)
+        return luffa512.digest(fullHash)
     }
 
     override fun digest(inbuf: ByteArray): ByteArray {
         var hash = tiger.digest(inbuf)
-        return luffa512.digest(hash)
+        var fullHash = ByteArray(64)
+        hash.copyInto(fullHash, 0, 0, hash.size)
+        return luffa512.digest(fullHash)
     }
 
     override fun digest(outbuf: ByteArray?, off: Int, len: Int): Int {
         val hash = tiger.digest()
-        luffa512.update(hash)
+        var fullHash = ByteArray(64)
+        hash.copyInto(fullHash, 0, 0, hash.size)
+        luffa512.update(fullHash)
         return luffa512.digest(outbuf, off, len)
     }
 
@@ -122,18 +134,24 @@ class TigerSHA512 : Digest {
     }
 
     override fun digest(): ByteArray {
-        val hash = tiger.digest();
-        return sha512.digest(hash)
+        val hash = tiger.digest()
+        var fullHash = ByteArray(64)
+        hash.copyInto(fullHash, 0, 0, hash.size)
+        return sha512.digest(fullHash)
     }
 
     override fun digest(inbuf: ByteArray): ByteArray {
         var hash = tiger.digest(inbuf)
-        return sha512.digest(hash)
+        var fullHash = ByteArray(64)
+        hash.copyInto(fullHash, 0, 0, hash.size)
+        return sha512.digest(fullHash)
     }
 
     override fun digest(outbuf: ByteArray?, off: Int, len: Int): Int {
         val hash = tiger.digest()
-        sha512.update(hash)
+        var fullHash = ByteArray(64)
+        hash.copyInto(fullHash, 0, 0, hash.size)
+        sha512.update(fullHash)
         return sha512.digest(outbuf, off, len)
     }
 
@@ -174,19 +192,18 @@ class X16Rv2Hasher : IHasher {
     {
         var index = 63 - index;
         if (index % 2 == 1)
-            return data[index / 2].toInt() shr  4
+            return (data[index / 2].toInt() and 0xFF) shr  4
         return(data[index / 2].toInt() and  0x0F);
     }
+
     override fun hash(data: ByteArray): ByteArray {
         var hash = data
+        var prevBlockHash = data.copyOfRange(4, 36)
 
-        algorithms.forEach {
-            hash = it.digest(hash)
-        }
         for (i in 0 until 16) {
-            val hashSelection = getNibble(hash,48+i)
+            val hashSelection = getNibble(prevBlockHash,48+i)
             hash = algorithms[hashSelection].digest(hash)
         }
-        return hash.copyOfRange(0, 32)
+        return hash!!.copyOfRange(0, 32)
     }
 }
