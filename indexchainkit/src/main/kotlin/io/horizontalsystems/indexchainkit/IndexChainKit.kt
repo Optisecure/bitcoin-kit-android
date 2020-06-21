@@ -17,6 +17,9 @@ import io.horizontalsystems.bitcoincore.utils.Base58AddressConverter
 import io.horizontalsystems.bitcoincore.utils.PaymentAddressParser
 import io.horizontalsystems.bitcoincore.utils.SegwitAddressConverter
 import io.horizontalsystems.hdwalletkit.Mnemonic
+import io.horizontalsystems.indexchainkit.messages.IndexBlockHeaderParser
+import io.horizontalsystems.indexchainkit.messages.IndexChainVersionMessageParser
+import io.horizontalsystems.indexchainkit.messages.IndexChainVersionMessageSerializer
 import io.horizontalsystems.indexchainkit.validators.DarkGravityWaveTestnetValidator
 import io.horizontalsystems.indexchainkit.validators.DarkGravityWaveValidator
 
@@ -83,10 +86,10 @@ class IndexChainKit : AbstractKit {
         val blockHelper = BlockValidatorHelper(storage)
 
         if (network is MainNetIndexChain) {
-            blockValidatorChain.add(DarkGravityWaveValidator(blockHelper, dgwPastBlocks, targetTimespan, maxTargetBits, 0))
+            blockValidatorChain.add(DarkGravityWaveValidator(blockHelper, dgwPastBlocks, targetTimespan, maxTargetBits, 31))
         } else {
-            blockValidatorChain.add(DarkGravityWaveTestnetValidator(targetSpacing, targetTimespan, maxTargetBits, 0))
-            blockValidatorChain.add(DarkGravityWaveValidator(blockHelper, dgwPastBlocks, targetTimespan, maxTargetBits, 0))
+            blockValidatorChain.add(DarkGravityWaveTestnetValidator(targetSpacing, targetTimespan, maxTargetBits, 31))
+            blockValidatorChain.add(DarkGravityWaveValidator(blockHelper, dgwPastBlocks, targetTimespan, maxTargetBits, 31))
         }
 
         blockValidatorSet.addBlockValidator(blockValidatorChain)
@@ -98,7 +101,9 @@ class IndexChainKit : AbstractKit {
                 .setSeed(seed)
                 .setNetwork(network)
                 .setBip(bip)
-                .setBlockHeaderParser(IndexChainBlockHeaderParser())
+                .setBlockHeaderParser(IndexBlockHeaderParser())
+                .setVersionMessageParser(IndexChainVersionMessageParser())
+                .setVersionMessageSerializer(IndexChainVersionMessageSerializer())
                 .setPaymentAddressParser(paymentAddressParser)
                 .setPeerSize(peerSize)
                 .setSyncMode(syncMode)
@@ -132,8 +137,8 @@ class IndexChainKit : AbstractKit {
     companion object {
 
         const val maxTargetBits: Long = 0x1e0fffff      // Maximum difficulty
-        const val targetSpacing = 120                   // 2.5 minutes per block.
-        const val targetTimespan: Long = 2400         // 3.5 days per difficulty cycle, on average.
+        const val targetSpacing = 120                   // 2.0 minutes per block.
+        const val targetTimespan: Long = 3600
         const val dgwPastBlocks: Long = 30
         const val heightInterval = targetTimespan / targetSpacing // 2016 blocks
 

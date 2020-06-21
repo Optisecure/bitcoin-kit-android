@@ -1,11 +1,13 @@
-package io.horizontalsystems.indexchainkit
+package io.horizontalsystems.indexchainkit.messages
 
 import io.horizontalsystems.bitcoincore.core.IHasher
 import io.horizontalsystems.bitcoincore.io.BitcoinInput
 import io.horizontalsystems.bitcoincore.serializers.BlockHeaderParser
 import io.horizontalsystems.bitcoincore.storage.BlockHeader
+import io.horizontalsystems.indexchainkit.IndexBlockHeader
+import io.horizontalsystems.indexchainkit.X16Rv2Hasher
 
-class IndexChainBlockHeaderParser(hasher: IHasher = X16Rv2Hasher()) : BlockHeaderParser(hasher) {
+class IndexBlockHeaderParser(hasher: IHasher = X16Rv2Hasher()) : BlockHeaderParser(hasher) {
 
     override fun parse(input: BitcoinInput): BlockHeader {
         val version = input.readInt()
