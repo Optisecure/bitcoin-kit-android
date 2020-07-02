@@ -4,6 +4,7 @@ import io.horizontalsystems.bitcoincore.network.Network
 
 class MainNetIndexChain : Network() {
     override val protocolVersion: Int = 90038
+    override val noBloomVersion: Int = 90013
     override var port: Int = 7082
     override var magic: Long = 0x4df7d3e5
     override var bip32HeaderPub: Int = 0x0488B21E   // The 4 byte header that serializes in base58 to "xpub".
