@@ -17,25 +17,50 @@ class DarkGravityWaveValidator(
 ) : IBlockChainedValidator {
 
     override fun validate(block: Block, previousBlock: Block) {
-        var actualTimeSpan = 0L
-        var avgTargets = CompactBits.decode(previousBlock.bits)
-        var prevBlock = blockHelper.getPrevious(previousBlock, 1)
 
-        for (blockCount in 2..heightInterval) {
-            val currentBlock = checkNotNull(prevBlock) {
+        var actualTimeSpan = 0L
+        var avgTargets = BigInteger.ZERO
+        var prevBlock: Block? = previousBlock
+        val isProofOfStake = block.nonce == 0L
+        var lastMatchingProof: Block? = null
+
+        var blockCount = 0
+        while (blockCount < heightInterval) {
+            var currentBlock = checkNotNull(prevBlock) {
                 throw BlockValidatorException.NoPreviousBlock()
             }
 
-            avgTargets *= BigInteger.valueOf(blockCount)
-            avgTargets += CompactBits.decode(currentBlock.bits)
-            avgTargets /= BigInteger.valueOf(blockCount + 1)
+            if ((currentBlock.nonce == 0L) != isProofOfStake) {
+                prevBlock = blockHelper.getPrevious(currentBlock, 1)
+                checkNotNull(prevBlock) {
+                    if (currentBlock.height == 0) {
+                        if (maxTargetBits != block.bits) {
+                            throw BlockValidatorException.NotEqualBits()
+                        } else return
+                    }
+                    throw BlockValidatorException.NoPreviousBlock()
+                }
+                continue
+            } else if (lastMatchingProof == null) {
+                lastMatchingProof = currentBlock
+            }
 
+            avgTargets *= BigInteger.valueOf(blockCount.toLong())
+            avgTargets += CompactBits.decode(currentBlock.bits)
+            avgTargets /= BigInteger.valueOf(blockCount + 1L)
+
+            ++blockCount
             if (blockCount < heightInterval) {
                 prevBlock = blockHelper.getPrevious(currentBlock, 1)
             } else {
                 actualTimeSpan = previousBlock.timestamp - currentBlock.timestamp
             }
         }
+
+        if (lastMatchingProof != null)
+            lastMatchingProof = previousBlock
+
+        actualTimeSpan = lastMatchingProof!!.timestamp - prevBlock!!.timestamp
 
         var darkTarget = avgTargets
 
