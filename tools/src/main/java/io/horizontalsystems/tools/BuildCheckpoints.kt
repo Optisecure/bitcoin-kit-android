@@ -22,7 +22,7 @@ import java.util.logging.Logger
 import kotlin.system.exitProcess
 
 fun main() {
-    Logger.getLogger("").level = Level.ALL
+    Logger.getLogger("").level = Level.SEVERE
     BuildCheckpoints()
     Thread.sleep(5000)
 }
@@ -46,7 +46,7 @@ class BuildCheckpoints : CheckpointSyncer.Listener {
         //it.add(CheckpointSyncer(MainNetLitecoin(), 2016, 2, this))
         //it.add(CheckpointSyncer(TestNetLitecoin(), 2016, 2, this))
 
-        it.add(IndexCheckpointSyncer(MainNetIndexChain(), 30, 2, this))
+        it.add(IndexCheckpointSyncer(MainNetIndexChain(), 30, 30, this))
         //it.add(CheckpointSyncer(TestNetLitecoin(), 2016, 2, this))
     }
 
