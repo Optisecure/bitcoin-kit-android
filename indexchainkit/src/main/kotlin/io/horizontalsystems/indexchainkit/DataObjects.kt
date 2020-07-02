@@ -1,11 +1,6 @@
 package io.horizontalsystems.indexchainkit
 
-import androidx.room.Embedded
-import io.horizontalsystems.bitcoincore.extensions.toHexString
-import io.horizontalsystems.bitcoincore.models.*
-import io.horizontalsystems.bitcoincore.serializers.TransactionSerializer
 import io.horizontalsystems.bitcoincore.storage.BlockHeader
-import io.horizontalsystems.bitcoincore.utils.HashUtils
 
 class IndexBlockHeader(
         version: Int,
