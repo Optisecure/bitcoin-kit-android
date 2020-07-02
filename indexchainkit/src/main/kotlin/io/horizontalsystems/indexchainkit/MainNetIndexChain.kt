@@ -20,6 +20,5 @@ class MainNetIndexChain : Network() {
     override val syncableFromApi = true
     override var dnsSeeds = listOf(
             "idxseeder.mineit.io"
-    //"192.168.1.120"
     )
 }
