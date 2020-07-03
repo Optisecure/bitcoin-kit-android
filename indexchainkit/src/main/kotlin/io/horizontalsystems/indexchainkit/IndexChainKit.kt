@@ -62,7 +62,7 @@ class IndexChainKit : AbstractKit {
             bip: Bip = Bip.BIP44
     ) {
         val database = CoreDatabase.getInstance(context, getDatabaseName(networkType, walletId, syncMode, bip))
-        val storage = Storage(database)
+        val storage = Storage(database, 5000)
         var initialSyncUrl = ""
 
         network = when (networkType) {
