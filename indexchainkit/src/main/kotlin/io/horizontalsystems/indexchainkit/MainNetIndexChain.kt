@@ -3,7 +3,7 @@ package io.horizontalsystems.indexchainkit
 import io.horizontalsystems.bitcoincore.network.Network
 
 class MainNetIndexChain : Network() {
-    override val protocolVersion: Int = 90038
+    override val protocolVersion: Int = 90039
     override val noBloomVersion: Int = 90013
     override var port: Int = 7082
     override var magic: Long = 0x4df7d3e5
