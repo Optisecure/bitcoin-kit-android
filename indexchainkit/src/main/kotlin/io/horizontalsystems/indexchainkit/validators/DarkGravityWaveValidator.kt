@@ -27,7 +27,10 @@ class DarkGravityWaveValidator(
         var blockCount = 0
         while (blockCount < heightInterval) {
             var currentBlock = checkNotNull(prevBlock) {
-                throw BlockValidatorException.NoPreviousBlock()
+                // Dash DGW throws BlockValidatorException.NoPreviousBlock here
+                // but for IndexChain, checkpoints are not exhaustive for both
+                // types of blocks
+                return
             }
 
             if ((currentBlock.nonce == 0L) != isProofOfStake) {
@@ -38,7 +41,10 @@ class DarkGravityWaveValidator(
                             throw BlockValidatorException.NotEqualBits()
                         } else return
                     }
-                    throw BlockValidatorException.NoPreviousBlock()
+                    // Dash DGW throws BlockValidatorException.NoPreviousBlock here
+                    // but for IndexChain, checkpoints are not exhaustive for both
+                    // types of blocks
+                    return
                 }
                 continue
             } else if (lastMatchingProof == null) {
