@@ -1,7 +1,7 @@
 package io.horizontalsystems.indexchainkit.messages
 
 import io.horizontalsystems.bitcoincore.core.IHasher
-import io.horizontalsystems.bitcoincore.io.BitcoinInput
+import io.horizontalsystems.bitcoincore.io.BitcoinInputMarkable
 import io.horizontalsystems.bitcoincore.serializers.BlockHeaderParser
 import io.horizontalsystems.bitcoincore.storage.BlockHeader
 import io.horizontalsystems.indexchainkit.IndexBlockHeader
@@ -9,7 +9,12 @@ import io.horizontalsystems.indexchainkit.X16Rv2Hasher
 
 class IndexBlockHeaderParser(hasher: IHasher = X16Rv2Hasher()) : BlockHeaderParser(hasher) {
 
-    override fun parse(input: BitcoinInput): BlockHeader {
+    override fun parse(input: BitcoinInputMarkable): BlockHeader {
+        input.mark()
+        val payload = input.readBytes(80)
+        val hash = hasher.hash(payload)
+        input.reset()
+
         val version = input.readInt()
         val previousBlockHeaderHash = input.readBytes(32)
         val merkleRoot = input.readBytes(32)
@@ -22,9 +27,6 @@ class IndexBlockHeaderParser(hasher: IHasher = X16Rv2Hasher()) : BlockHeaderPars
             val signatureSize = input.readVarInt()
             signature = input.readBytes(signatureSize.toInt())
         }
-        val payload = serialize(version, previousBlockHeaderHash, merkleRoot, timestamp, bits, nonce)
-
-        val hash = hasher.hash(payload)
 
         return IndexBlockHeader(version, previousBlockHeaderHash, merkleRoot, timestamp, bits, nonce, signature, hash)
     }
