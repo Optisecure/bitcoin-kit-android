@@ -4,9 +4,9 @@ import io.horizontalsystems.bitcoincore.core.IHasher
 import io.horizontalsystems.bitcoincore.io.BitcoinInputMarkable
 import io.horizontalsystems.bitcoincore.storage.BlockHeader
 
-class BlockHeaderParser(private val hasher: IHasher) {
+open class BlockHeaderParser(val hasher: IHasher) {
 
-    fun parse(input: BitcoinInputMarkable): BlockHeader {
+    open fun parse(input: BitcoinInputMarkable): BlockHeader {
         input.mark()
         val payload = input.readBytes(80)
         val hash = hasher.hash(payload)

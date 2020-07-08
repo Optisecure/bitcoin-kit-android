@@ -1,19 +1,23 @@
-package io.horizontalsystems.bitcoincore.network.messages
+package io.horizontalsystems.indexchainkit.messages
 
 import io.horizontalsystems.bitcoincore.core.IHasher
 import io.horizontalsystems.bitcoincore.extensions.toReversedHex
 import io.horizontalsystems.bitcoincore.io.BitcoinInputMarkable
 import io.horizontalsystems.bitcoincore.io.BitcoinOutput
-import io.horizontalsystems.bitcoincore.storage.BlockHeader
+import io.horizontalsystems.bitcoincore.network.messages.HeadersMessage
+import io.horizontalsystems.bitcoincore.network.messages.HeadersMessageParser
+import io.horizontalsystems.bitcoincore.network.messages.HeadersMessageSerializer
+import io.horizontalsystems.bitcoincore.network.messages.IMessage
+import io.horizontalsystems.indexchainkit.IndexBlockHeader
+import java.io.ByteArrayInputStream
 
-open class HeadersMessage(val headers: Array<BlockHeader>) : IMessage {
+class IndexHeadersMessage(val indexHeaders: Array<IndexBlockHeader>) : HeadersMessage(indexHeaders.map { it }.toTypedArray()) {
     override fun toString(): String {
-        return "HeadersMessage(${headers.size}:[${headers.joinToString { it.hash.toReversedHex() }}])"
+        return "IndexHeadersMessage(${indexHeaders.size}:[${indexHeaders.joinToString { it.hash.toReversedHex() }}])"
     }
 }
 
-open class HeadersMessageParser(private val hasher: IHasher) : IMessageParser {
-    override val command: String = "headers"
+class IndexHeadersMessageParser(private val hasher: IHasher) : HeadersMessageParser(hasher) {
 
     override fun parseMessage(input: BitcoinInputMarkable): IMessage {
         val count = input.readVarInt().toInt()
@@ -25,6 +29,12 @@ open class HeadersMessageParser(private val hasher: IHasher) : IMessageParser {
             val timestamp = input.readUnsignedInt()
             val bits = input.readUnsignedInt()
             val nonce = input.readUnsignedInt()
+            val signature = if (nonce == 0L) {
+                val size = input.readVarInt()
+                input.readBytes(size.toInt())
+            } else {
+                null
+            }
             input.readVarInt() // tx count always zero
 
             val headerPayload = BitcoinOutput().also {
@@ -36,15 +46,14 @@ open class HeadersMessageParser(private val hasher: IHasher) : IMessageParser {
                 it.writeUnsignedInt(nonce)
             }
 
-            BlockHeader(version, prevHash, merkleHash, timestamp, bits, nonce, hasher.hash(headerPayload.toByteArray()))
+            IndexBlockHeader(version, prevHash, merkleHash, timestamp, bits, nonce, signature, hasher.hash(headerPayload.toByteArray()))
         }
 
-        return HeadersMessage(headers)
+        return IndexHeadersMessage(headers)
     }
 }
 
-open class HeadersMessageSerializer : IMessageSerializer {
-    override val command: String = "headers"
+class IndexHeadersMessageSerializer : HeadersMessageSerializer() {
 
     override fun serialize(message: IMessage): ByteArray? {
         if (message !is HeadersMessage) {
@@ -55,13 +64,16 @@ open class HeadersMessageSerializer : IMessageSerializer {
             it.writeInt(message.headers.size)
         }
 
-        message.headers.forEach {
+        message.headers.forEach { blockHeader ->
+            val it = blockHeader as IndexBlockHeader
             output.writeInt(it.version)
             output.write(it.previousBlockHeaderHash)
             output.write(it.merkleRoot)
             output.writeUnsignedInt(it.timestamp)
             output.writeUnsignedInt(it.bits)
             output.writeUnsignedInt(it.nonce)
+            if (it.nonce == 0L)
+                output.write(it.signature)
         }
 
         return output.toByteArray()
