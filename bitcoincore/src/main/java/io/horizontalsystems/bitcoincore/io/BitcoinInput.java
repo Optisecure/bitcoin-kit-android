@@ -1,6 +1,5 @@
 package io.horizontalsystems.bitcoincore.io;
 
-import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,18 +10,14 @@ import java.nio.charset.StandardCharsets;
  *
  * @author Michael Liao
  */
-public final class BitcoinInput implements AutoCloseable {
+public class BitcoinInput implements AutoCloseable {
 
     private static byte[] EMPTY_BYTES = new byte[0];
-    private final InputStream in;
-    private byte bufferOf8bytes[] = new byte[8];
+    protected final InputStream in;
+    private byte[] bufferOf8bytes = new byte[8];
 
     public BitcoinInput(InputStream in) {
         this.in = in;
-    }
-
-    public BitcoinInput(byte[] data) {
-        this.in = new ByteArrayInputStream(data);
     }
 
     /**
@@ -37,10 +32,7 @@ public final class BitcoinInput implements AutoCloseable {
         if (in.read(buffer) < 0) {
             throw new EOFException();
         }
-        return readVarInt(0xff & buffer[0]);
-    }
-
-    public long readVarInt(int ch) throws IOException {
+        int ch = 0xff & buffer[0];
         if (ch < 0xfd) {
             return ch;
         }

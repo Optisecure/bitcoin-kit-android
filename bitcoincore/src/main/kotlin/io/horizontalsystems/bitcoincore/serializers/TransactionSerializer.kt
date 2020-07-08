@@ -1,6 +1,6 @@
 package io.horizontalsystems.bitcoincore.serializers
 
-import io.horizontalsystems.bitcoincore.io.BitcoinInput
+import io.horizontalsystems.bitcoincore.io.BitcoinInputMarkable
 import io.horizontalsystems.bitcoincore.io.BitcoinOutput
 import io.horizontalsystems.bitcoincore.models.Transaction
 import io.horizontalsystems.bitcoincore.models.TransactionInput
@@ -12,20 +12,21 @@ import io.horizontalsystems.bitcoincore.transactions.scripts.ScriptType
 import io.horizontalsystems.bitcoincore.utils.HashUtils
 
 object TransactionSerializer {
-    fun deserialize(input: BitcoinInput): FullTransaction {
+    fun deserialize(input: BitcoinInputMarkable): FullTransaction {
         val transaction = Transaction()
         val inputs = mutableListOf<TransactionInput>()
         val outputs = mutableListOf<TransactionOutput>()
 
         transaction.version = input.readInt()
-
+        input.mark()
         val marker = 0xff and input.readUnsignedByte()
         val inputCount = if (marker == 0) {  // segwit marker: 0x00
             input.read()  // skip segwit flag: 0x01
             transaction.segwit = true
             input.readVarInt()
         } else {
-            input.readVarInt(marker)
+            input.reset()
+            input.readVarInt()
         }
 
         //  inputs
