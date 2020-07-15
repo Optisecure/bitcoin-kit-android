@@ -11,4 +11,8 @@ open class BlockValidatorHelper(protected val storage: IStorage) {
     fun getPrevious(block: Block, stepBack: Int): Block? {
         return storage.getBlock(block.height - stepBack)
     }
+
+    fun getPrevious(block: Block): Block? {
+        return storage.getBlock(block.previousBlockHash)
+    }
 }

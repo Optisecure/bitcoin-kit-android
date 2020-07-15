@@ -34,7 +34,7 @@ class DarkGravityWaveValidator(
             }
 
             if ((currentBlock.nonce == 0L) != isProofOfStake) {
-                prevBlock = blockHelper.getPrevious(currentBlock, 1)
+                prevBlock = blockHelper.getPrevious(currentBlock)
                 checkNotNull(prevBlock) {
                     if (currentBlock.height == 0) {
                         if (maxTargetBits != block.bits) {
@@ -57,7 +57,7 @@ class DarkGravityWaveValidator(
 
             ++blockCount
             if (blockCount < heightInterval) {
-                prevBlock = blockHelper.getPrevious(currentBlock, 1)
+                prevBlock = blockHelper.getPrevious(currentBlock)
             } else {
                 actualTimeSpan = previousBlock.timestamp - currentBlock.timestamp
             }
